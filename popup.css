@@ -8,8 +8,8 @@
   --glass-bg: rgba(255, 255, 255, 0.08);
   --glass-border: rgba(255, 255, 255, 0.18);
   --glass-shadow: rgba(0, 0, 0, 0.3);
-  --primary-blue: #007AFF;
-  --primary-glow: rgba(0, 122, 255, 0.4);
+  --primary-green: #34C759;
+  --primary-glow: rgba(52, 199, 89, 0.4);
   --text-primary: #FFFFFF;
   --text-secondary: rgba(255, 255, 255, 0.6);
   --backdrop-blur: 20px;
@@ -151,7 +151,7 @@ body {
   position: absolute;
   width: 10px;
   height: 10px;
-  background: var(--primary-blue);
+  background: var(--primary-green);
   border-radius: 50%;
   top: 50%;
   left: 50%;
@@ -161,8 +161,8 @@ body {
 }
 
 .glass-radio input[type="radio"]:checked + .radio-custom {
-  border-color: var(--primary-blue);
-  box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2);
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 4px rgba(52, 199, 89, 0.2);
 }
 
 .glass-radio input[type="radio"]:checked + .radio-custom::after {
@@ -186,82 +186,117 @@ body {
   margin-bottom: 28px;
 }
 
+.time-group .section-label {
+  margin-bottom: 32px;
+}
+
+.slider-wrapper {
+  margin-top: 0;
+}
+
 .slider-container {
-  margin-top: 12px;
-}
-
-.glass-slider-track {
-  position: relative;
-  height: 44px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 22px;
-  overflow: hidden;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.glass-slider-fill {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  background: linear-gradient(90deg, var(--primary-blue), rgba(0, 122, 255, 0.6));
-  border-radius: 22px;
-  transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 20px var(--primary-glow);
-  pointer-events: none;
-}
-
-.glass-slider {
   position: relative;
   width: 100%;
-  height: 100%;
-  -webkit-appearance: none;
-  appearance: none;
-  background: transparent;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
   cursor: pointer;
-  outline: none;
-  z-index: 2;
 }
 
-.glass-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 0;
-  height: 0;
-  opacity: 0;
+.slider-progress {
+  position: absolute;
+  height: 100%;
+  background: linear-gradient(117deg, var(--primary-green) 0%, #28A745 100%);
+  border-radius: 999px;
+  width: 0%;
+  z-index: 1;
+  box-shadow: 0 0 20px var(--primary-glow);
+  transition: width 0.1s ease;
 }
 
-.glass-slider::-moz-range-thumb {
-  width: 0;
-  height: 0;
-  opacity: 0;
-}
-
-.slider-thumb {
+.slider-thumb-glass {
   position: absolute;
   top: 50%;
-  width: 36px;
-  height: 36px;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 50%;
   transform: translate(-50%, -50%);
+  width: 60px;
+  height: 36px;
+  border-radius: 999px;
+  cursor: grab;
+  z-index: 2;
+  background-color: rgba(255, 255, 255, 0.95);
   box-shadow: 
-    0 2px 8px rgba(0, 0, 0, 0.2),
-    0 0 0 4px rgba(255, 255, 255, 0.3),
-    inset 0 1px 2px rgba(255, 255, 255, 0.5);
-  pointer-events: none;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 3;
+    0 1px 8px 0 rgba(0, 30, 63, 0.15), 
+    0 0 2px 0 rgba(0, 9, 20, 0.1),
+    0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.15s ease, height 0.15s ease;
 }
 
-.glass-slider:active ~ .slider-thumb {
-  transform: translate(-50%, -50%) scale(1.1);
-  box-shadow: 
-    0 4px 12px rgba(0, 0, 0, 0.3),
-    0 0 0 6px rgba(255, 255, 255, 0.4),
-    inset 0 1px 2px rgba(255, 255, 255, 0.5);
+.slider-thumb-glass-filter {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  backdrop-filter: blur(0.6px);
+  -webkit-backdrop-filter: blur(0.6px);
+  filter: url(#mini-liquid-lens);
+  pointer-events: none;
+}
+
+.slider-thumb-glass-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-color: rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+
+.slider-thumb-glass-specular {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  box-shadow:
+    inset 1px 1px 0 rgba(52, 199, 89, 0.15),
+    inset 1px 3px 0 rgba(28, 63, 90, 0.05),
+    inset 0 0 22px rgba(255, 255, 255, 0.6),
+    inset -1px -1px 0 rgba(52, 199, 89, 0.1);
+  pointer-events: none;
+}
+
+.slider-thumb-value {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+  user-select: none;
+}
+
+.slider-thumb-glass-filter,
+.slider-thumb-glass-overlay,
+.slider-thumb-glass-specular {
+  opacity: 0;
+}
+
+.slider-thumb-glass.active {
+  background-color: transparent;
+  box-shadow: none;
+  cursor: grabbing;
+}
+
+.slider-thumb-glass.active .slider-thumb-glass-filter,
+.slider-thumb-glass.active .slider-thumb-glass-overlay,
+.slider-thumb-glass.active .slider-thumb-glass-specular {
+  opacity: 1;
+}
+
+.slider-thumb-glass:active {
+  transform: translate(-50%, -50%) scaleY(0.98) scaleX(1.1);
 }
 
 .time-display {
@@ -283,7 +318,7 @@ body {
 .glass-button {
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, var(--primary-blue) 0%, #0051D5 100%);
+  background: linear-gradient(135deg, var(--primary-green) 0%, #28A745 100%);
   border: none;
   border-radius: 16px;
   color: var(--text-primary);
@@ -294,7 +329,7 @@ body {
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 
-    0 4px 16px rgba(0, 122, 255, 0.4),
+    0 4px 16px rgba(52, 199, 89, 0.4),
     inset 0 1px 1px rgba(255, 255, 255, 0.3);
 }
 
@@ -313,14 +348,14 @@ body {
 .glass-button:hover {
   transform: translateY(-2px);
   box-shadow: 
-    0 8px 24px rgba(0, 122, 255, 0.5),
+    0 8px 24px rgba(52, 199, 89, 0.5),
     inset 0 1px 1px rgba(255, 255, 255, 0.4);
 }
 
 .glass-button:active {
   transform: translateY(0);
   box-shadow: 
-    0 2px 8px rgba(0, 122, 255, 0.4),
+    0 2px 8px rgba(52, 199, 89, 0.4),
     inset 0 1px 1px rgba(255, 255, 255, 0.3);
 }
 

@@ -1,10 +1,9 @@
 const urlInput = document.getElementById('website-url');
 const segmentRadios = document.querySelectorAll('input[name="segment"]');
-const timeSlider = document.getElementById('time-slider');
-const sliderFill = document.getElementById('slider-fill');
+const slider = document.getElementById('time-slider');
+const sliderProgress = document.getElementById('slider-progress');
 const sliderThumb = document.getElementById('slider-thumb');
-const timeValue = document.getElementById('time-value');
-const timeUnit = document.getElementById('time-unit');
+const sliderThumbValue = document.getElementById('slider-thumb-value');
 const saveBtn = document.getElementById('save-btn');
 const blockedList = document.getElementById('blocked-sites');
 
@@ -16,28 +15,95 @@ const segmentHoursMap = {
   12: 2
 };
 
-function updateSliderUI() {
-  const value = parseInt(timeSlider.value);
-  const max = parseInt(timeSlider.max);
-  const percentage = ((value - 1) / (max - 1)) * 100;
+let isDragging = false;
+let sliderRect = null;
+let currentMinValue = 1;
+let currentMaxValue = 6;
+let currentValue = 2;
+
+const updateSliderUI = (value) => {
+  currentValue = Math.max(currentMinValue, Math.min(currentMaxValue, value));
+  const percent = ((currentValue - currentMinValue) / (currentMaxValue - currentMinValue)) * 100;
+  const px = (percent / 100) * sliderRect.width;
   
-  sliderFill.style.width = `${percentage}%`;
-  sliderThumb.style.left = `${percentage}%`;
-  
-  timeValue.textContent = value;
-  timeUnit.textContent = value === 1 ? 'hour' : 'hours';
-}
+  sliderProgress.style.width = `${percent}%`;
+  sliderThumb.style.left = `${px}px`;
+  sliderThumbValue.textContent = `${currentValue}h`;
+};
+
+const getValueFromClientX = (clientX) => {
+  const offsetX = clientX - sliderRect.left;
+  const percent = (offsetX / sliderRect.width) * 100;
+  const range = currentMaxValue - currentMinValue;
+  const value = Math.round((percent / 100) * range + currentMinValue);
+  return value;
+};
+
+const onMove = (clientX) => {
+  const value = getValueFromClientX(clientX);
+  updateSliderUI(value);
+};
+
+const onMouseDown = (e) => {
+  isDragging = true;
+  sliderRect = slider.getBoundingClientRect();
+  onMove(e.clientX);
+  sliderThumb.classList.add('active');
+};
+
+const onTouchStart = (e) => {
+  isDragging = true;
+  sliderRect = slider.getBoundingClientRect();
+  onMove(e.touches[0].clientX);
+  sliderThumb.classList.add('active');
+};
+
+const onMouseMove = (e) => {
+  if (isDragging) onMove(e.clientX);
+};
+
+const onTouchMove = (e) => {
+  if (isDragging) onMove(e.touches[0].clientX);
+};
+
+const stopDrag = () => {
+  isDragging = false;
+  sliderThumb.classList.remove('active');
+};
+
+const initSlider = () => {
+  sliderRect = slider.getBoundingClientRect();
+  updateSliderUI(currentValue);
+};
+
+sliderThumb.addEventListener('mousedown', onMouseDown);
+sliderThumb.addEventListener('touchstart', onTouchStart, { passive: true });
+
+document.addEventListener('mousemove', onMouseMove);
+document.addEventListener('mouseup', stopDrag);
+document.addEventListener('touchmove', onTouchMove, { passive: false });
+document.addEventListener('touchend', stopDrag);
+
+slider.addEventListener('mousedown', (e) => {
+  sliderRect = slider.getBoundingClientRect();
+  onMove(e.clientX);
+});
+
+slider.addEventListener('touchstart', (e) => {
+  sliderRect = slider.getBoundingClientRect();
+  onMove(e.touches[0].clientX);
+}, { passive: true });
 
 function updateSliderRange(segments) {
   const maxHours = segmentHoursMap[segments];
-  timeSlider.max = maxHours;
+  currentMaxValue = maxHours;
   
-  const currentValue = parseInt(timeSlider.value);
   if (currentValue > maxHours) {
-    timeSlider.value = maxHours;
+    currentValue = maxHours;
   }
   
-  updateSliderUI();
+  sliderRect = slider.getBoundingClientRect();
+  updateSliderUI(currentValue);
 }
 
 segmentRadios.forEach(radio => {
@@ -46,8 +112,6 @@ segmentRadios.forEach(radio => {
     updateSliderRange(segments);
   });
 });
-
-timeSlider.addEventListener('input', updateSliderUI);
 
 saveBtn.addEventListener('click', async () => {
   const url = urlInput.value.trim();
@@ -64,7 +128,7 @@ saveBtn.addEventListener('click', async () => {
   }
   
   const selectedSegment = parseInt(document.querySelector('input[name="segment"]:checked').value);
-  const unblockTime = parseInt(timeSlider.value);
+  const unblockTime = currentValue;
   
   const blockRule = {
     url: normalizedUrl,
@@ -224,5 +288,5 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-updateSliderUI();
+initSlider();
 loadBlockedSites();
