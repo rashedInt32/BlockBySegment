@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlockBySegment</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="glass-card">
+      <h1 class="title">BlockBySegment</h1>
+      
+      <div class="input-group">
+        <label for="website-url">Website URL</label>
+        <input 
+          type="text" 
+          id="website-url" 
+          class="glass-input" 
+          placeholder="https://example.com"
+        >
+      </div>
+
+      <div class="segment-group">
+        <label class="section-label">Segments per Day</label>
+        <div class="radio-container">
+          <label class="glass-radio">
+            <input type="radio" name="segment" value="2">
+            <span class="radio-custom"></span>
+            <span class="radio-label">2 <small>(12h each)</small></span>
+          </label>
+          <label class="glass-radio">
+            <input type="radio" name="segment" value="4" checked>
+            <span class="radio-custom"></span>
+            <span class="radio-label">4 <small>(6h each)</small></span>
+          </label>
+          <label class="glass-radio">
+            <input type="radio" name="segment" value="6">
+            <span class="radio-custom"></span>
+            <span class="radio-label">6 <small>(4h each)</small></span>
+          </label>
+          <label class="glass-radio">
+            <input type="radio" name="segment" value="8">
+            <span class="radio-custom"></span>
+            <span class="radio-label">8 <small>(3h each)</small></span>
+          </label>
+          <label class="glass-radio">
+            <input type="radio" name="segment" value="12">
+            <span class="radio-custom"></span>
+            <span class="radio-label">12 <small>(2h each)</small></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="time-group">
+        <label class="section-label">Unblock Time per Segment</label>
+        <div class="slider-container">
+          <div class="glass-slider-track">
+            <div class="glass-slider-fill" id="slider-fill"></div>
+            <input 
+              type="range" 
+              id="time-slider" 
+              min="1" 
+              max="6" 
+              value="3" 
+              class="glass-slider"
+            >
+            <div class="slider-thumb" id="slider-thumb"></div>
+          </div>
+          <div class="time-display">
+            <span id="time-value">3</span> <span id="time-unit">hours</span>
+          </div>
+        </div>
+      </div>
+
+      <button id="save-btn" class="glass-button">
+        <span class="button-glow"></span>
+        <span class="button-text">Set Block Rule</span>
+      </button>
+
+      <div id="blocked-sites" class="blocked-list"></div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
