@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head><title>Generate Icons</title></head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+const sizes = [16, 48, 128];
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+sizes.forEach(size => {
+  canvas.width = size;
+  canvas.height = size;
+  
+  const gradient = ctx.createLinearGradient(0, 0, size, size);
+  gradient.addColorStop(0, '#667eea');
+  gradient.addColorStop(1, '#764ba2');
+  
+  const radius = size * 0.22;
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  ctx.roundRect(0, 0, size, size, radius);
+  ctx.fill();
+  
+  const centerX = size / 2;
+  const centerY = size / 2;
+  const clockRadius = size * 0.31;
+  
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+  ctx.lineWidth = size * 0.047;
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, clockRadius, 0, 2 * Math.PI);
+  ctx.stroke();
+  
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+  ctx.lineCap = 'round';
+  ctx.lineWidth = size * 0.047;
+  ctx.beginPath();
+  ctx.moveTo(centerX, centerY - clockRadius);
+  ctx.lineTo(centerX, centerY);
+  ctx.stroke();
+  
+  ctx.beginPath();
+  ctx.moveTo(centerX, centerY);
+  ctx.lineTo(centerX + clockRadius * 0.5, centerY + clockRadius * 0.5);
+  ctx.stroke();
+  
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, size * 0.039, 0, 2 * Math.PI);
+  ctx.fill();
+  
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+  ctx.lineWidth = size * 0.039;
+  const tickLength = size * 0.078;
+  
+  [[0.23, 0.39], [0.61, 0.23], [0.77, 0.61], [0.39, 0.77]].forEach(([sx, sy]) => {
+    const startX = size * sx;
+    const startY = size * sy;
+    const angle = Math.atan2(startY - centerY, startX - centerX);
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(startX + Math.cos(angle) * tickLength, startY + Math.sin(angle) * tickLength);
+    ctx.stroke();
+  });
+  
+  canvas.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `icon${size}.png`;
+    a.click();
+  });
+});
+</script>
+</body>
+</html>

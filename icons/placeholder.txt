@@ -1,0 +1,13 @@
+Icons needed: icon16.png, icon48.png, icon128.png
+
+You can generate these icons using the generate-icons.html file:
+1. Open generate-icons.html in a web browser
+2. The icons will download automatically
+3. Save them in this icons/ directory
+
+Or create simple placeholder icons temporarily by:
+- Creating any 16x16, 48x48, and 128x128 PNG images
+- Naming them icon16.png, icon48.png, icon128.png
+- Placing them in this directory
+
+The extension will work without icons, but they're recommended for better UX.
