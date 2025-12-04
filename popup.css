@@ -16,16 +16,19 @@
 }
 
 body {
-  width: 380px;
-  min-height: 500px;
+  width: 420px;
+  min-height: auto;
+  max-height: 600px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: transparent;
   color: var(--text-primary);
   overflow-x: hidden;
 }
 
 .container {
-  padding: 20px;
+  padding: 0;
+  background: transparent;
+  margin-bottom: -15px
 }
 
 .glass-card {
@@ -33,9 +36,9 @@ body {
   backdrop-filter: blur(var(--backdrop-blur));
   -webkit-backdrop-filter: blur(var(--backdrop-blur));
   border: 1px solid var(--glass-border);
-  border-radius: 24px;
   padding: 24px;
   box-shadow: 0 8px 32px var(--glass-shadow);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .title {
@@ -93,93 +96,78 @@ body {
   margin-bottom: 24px;
 }
 
-.radio-container {
+.circle-radio-container {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.glass-radio {
-  display: flex;
+  gap: 12px;
+  justify-content: center;
   align-items: center;
-  padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
+}
+
+.circle-glass-radio {
+  position: relative;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-.glass-radio::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.glass-radio:hover::before {
-  opacity: 1;
-}
-
-.glass-radio:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.25);
-  transform: translateX(4px);
-}
-
-.glass-radio input[type="radio"] {
-  display: none;
-}
-
-.radio-custom {
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  border-radius: 50%;
-  margin-right: 12px;
-  position: relative;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  flex-shrink: 0;
-}
-
-.radio-custom::after {
-  content: '';
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  background: var(--primary-green);
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 10px var(--primary-glow);
-}
-
-.glass-radio input[type="radio"]:checked + .radio-custom {
-  border-color: var(--primary-green);
-  box-shadow: 0 0 0 4px rgba(52, 199, 89, 0.2);
-}
-
-.glass-radio input[type="radio"]:checked + .radio-custom::after {
-  transform: translate(-50%, -50%) scale(1);
-}
-
-.radio-label {
-  font-size: 15px;
-  font-weight: 500;
   user-select: none;
 }
 
-.radio-label small {
-  color: var(--text-secondary);
-  font-size: 12px;
-  font-weight: 400;
-  margin-left: 4px;
+.circle-glass-radio input[type="radio"] {
+  display: none;
+}
+
+.circle-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid transparent;
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.6),
+    0 8px 16px rgba(0, 0, 0, 0.12);
+  backdrop-filter: url(#frosted);
+  -webkit-backdrop-filter: blur(20px);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.circle-glass-radio:hover .circle-number {
+  transform: scale(1.05);
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.7),
+    0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.circle-glass-radio input[type="radio"]:checked + .circle-number {
+  background: var(--primary-green);
+  border-color: transparent;
+  box-shadow:
+    0 0 0 2px rgba(52, 199, 89, 0.8),
+    0 8px 16px rgba(52, 199, 89, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  color: #FFFFFF;
+}
+
+.circle-glass-radio input[type="radio"]:checked + .circle-number::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid rgba(52, 199, 89, 0.3);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.1);
+  }
 }
 
 .time-group {
@@ -224,8 +212,8 @@ body {
   cursor: grab;
   z-index: 2;
   background-color: rgba(255, 255, 255, 0.95);
-  box-shadow: 
-    0 1px 8px 0 rgba(0, 30, 63, 0.15), 
+  box-shadow:
+    0 1px 8px 0 rgba(0, 30, 63, 0.15),
     0 0 2px 0 rgba(0, 9, 20, 0.1),
     0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -328,7 +316,7 @@ body {
   position: relative;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 
+  box-shadow:
     0 4px 16px rgba(52, 199, 89, 0.4),
     inset 0 1px 1px rgba(255, 255, 255, 0.3);
 }
@@ -347,14 +335,14 @@ body {
 
 .glass-button:hover {
   transform: translateY(-2px);
-  box-shadow: 
+  box-shadow:
     0 8px 24px rgba(52, 199, 89, 0.5),
     inset 0 1px 1px rgba(255, 255, 255, 0.4);
 }
 
 .glass-button:active {
   transform: translateY(0);
-  box-shadow: 
+  box-shadow:
     0 2px 8px rgba(52, 199, 89, 0.4),
     inset 0 1px 1px rgba(255, 255, 255, 0.3);
 }

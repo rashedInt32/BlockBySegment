@@ -241,16 +241,17 @@ function showNotification(message, type) {
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: ${type === 'success' ? 'rgba(52, 199, 89, 0.9)' : 'rgba(255, 59, 48, 0.9)'};
+    background: ${type === 'success' ? 'rgba(52, 199, 89, 0.25)' : 'rgba(255, 59, 48, 0.25)'};
     color: white;
-    padding: 12px 20px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 500;
+    padding: 16px 32px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 600;
     z-index: 1000;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     animation: slideDown 0.3s ease;
+    white-space: nowrap;
   `;
   notification.textContent = message;
   

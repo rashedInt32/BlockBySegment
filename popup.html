@@ -23,31 +23,26 @@
 
       <div class="segment-group">
         <label class="section-label">Segments per Day</label>
-        <div class="radio-container">
-          <label class="glass-radio">
+        <div class="circle-radio-container">
+          <label class="circle-glass-radio">
             <input type="radio" name="segment" value="2">
-            <span class="radio-custom"></span>
-            <span class="radio-label">2 <small>(12h each)</small></span>
+            <span class="circle-number">2</span>
           </label>
-          <label class="glass-radio">
+          <label class="circle-glass-radio">
             <input type="radio" name="segment" value="4" checked>
-            <span class="radio-custom"></span>
-            <span class="radio-label">4 <small>(6h each)</small></span>
+            <span class="circle-number">4</span>
           </label>
-          <label class="glass-radio">
+          <label class="circle-glass-radio">
             <input type="radio" name="segment" value="6">
-            <span class="radio-custom"></span>
-            <span class="radio-label">6 <small>(4h each)</small></span>
+            <span class="circle-number">6</span>
           </label>
-          <label class="glass-radio">
+          <label class="circle-glass-radio">
             <input type="radio" name="segment" value="8">
-            <span class="radio-custom"></span>
-            <span class="radio-label">8 <small>(3h each)</small></span>
+            <span class="circle-number">8</span>
           </label>
-          <label class="glass-radio">
+          <label class="circle-glass-radio">
             <input type="radio" name="segment" value="12">
-            <span class="radio-custom"></span>
-            <span class="radio-label">12 <small>(2h each)</small></span>
+            <span class="circle-number">12</span>
           </label>
         </div>
       </div>
@@ -91,6 +86,11 @@
       <feMerge>
         <feMergeNode in="displaced" />
       </feMerge>
+    </filter>
+
+    <filter id="frosted">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G" />
     </filter>
   </svg>
 
