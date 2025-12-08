@@ -69,10 +69,10 @@ body {
 
 .glass-input {
   width: 100%;
-  padding: 14px 16px;
+  padding: 14px 20px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 14px;
+  border-radius: 30px;
   color: var(--text-primary);
   font-size: 15px;
   outline: none;
@@ -180,12 +180,14 @@ body {
 
 .slider-wrapper {
   margin-top: 0;
+  margin-bottom: 40px
 }
 
 .slider-container {
   position: relative;
-  width: 100%;
+  width: calc(100% - 20px);
   height: 10px;
+  margin-left: 10px;
   background: rgba(255, 255, 255, 0.15);
   border-radius: 999px;
   cursor: pointer;
@@ -308,7 +310,7 @@ body {
   padding: 16px;
   background: linear-gradient(135deg, var(--primary-green) 0%, #28A745 100%);
   border: none;
-  border-radius: 16px;
+  border-radius: 30px;
   color: var(--text-primary);
   font-size: 16px;
   font-weight: 600;
