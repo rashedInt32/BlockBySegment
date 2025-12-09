@@ -6,8 +6,6 @@ const SEGMENT_HOURS_MAP = {
   12: 2
 };
 
-const TRACKING_INTERVAL_SECONDS = 10;
-
 chrome.runtime.onInstalled.addListener(() => {
   console.log('BlockBySegment installed');
   initializeAlarms();
@@ -24,18 +22,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === 'checkSegmentReset') {
     resetSegmentTimers();
-  } else if (alarm.name === 'trackActiveTime') {
-    trackActiveTabTime();
   }
 });
 
 function initializeAlarms() {
   chrome.alarms.create('checkSegmentReset', {
     periodInMinutes: 1
-  });
-  
-  chrome.alarms.create('trackActiveTime', {
-    periodInMinutes: TRACKING_INTERVAL_SECONDS / 60
   });
 }
 
@@ -61,22 +53,18 @@ async function getUsageForCurrentSegment(url, segmentInfo) {
   return result[storageKey] || 0;
 }
 
-async function updateUsage(url, segmentInfo, seconds) {
+async function updateUsage(url, segmentInfo, minutes) {
   const storageKey = `usage_${url}_${segmentInfo.segmentStartTime}`;
   const currentUsage = await getUsageForCurrentSegment(url, segmentInfo);
-  const newUsage = currentUsage + seconds;
-  
-  await chrome.storage.local.set({ [storageKey]: newUsage });
-  return newUsage;
+  await chrome.storage.local.set({ [storageKey]: currentUsage + minutes });
 }
 
 async function shouldBlockSite(url, rule) {
   const segmentInfo = await getCurrentSegment(rule.segments);
-  const usageSeconds = await getUsageForCurrentSegment(url, segmentInfo);
-  const usageHours = usageSeconds / 3600;
-  const unblockHours = rule.unblockHours;
+  const usageMinutes = await getUsageForCurrentSegment(url, segmentInfo);
+  const unblockMinutes = rule.unblockHours * 60;
   
-  return usageHours >= unblockHours;
+  return usageMinutes >= unblockMinutes;
 }
 
 async function updateDeclarativeRules(sites) {
@@ -136,55 +124,31 @@ async function resetSegmentTimers() {
   }
 }
 
-async function trackActiveTabTime() {
-  try {
-    const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    
-    if (!activeTab || !activeTab.url) return;
-    
-    const { blockedSites = [] } = await chrome.storage.local.get('blockedSites');
-    
-    const url = new URL(activeTab.url);
-    let hostname = url.hostname;
-    if (hostname.startsWith('www.')) {
-      hostname = hostname.substring(4);
-    }
-    
-    const matchedRule = blockedSites.find(site => hostname.includes(site.url));
-    
-    if (matchedRule) {
-      const segmentInfo = await getCurrentSegment(matchedRule.segments);
-      const newUsage = await updateUsage(matchedRule.url, segmentInfo, TRACKING_INTERVAL_SECONDS);
-      const usageHours = newUsage / 3600;
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  if (changeInfo.status === 'complete' && tab.url) {
+    try {
+      const { blockedSites = [] } = await chrome.storage.local.get('blockedSites');
       
-      if (usageHours >= matchedRule.unblockHours) {
-        await updateDeclarativeRules(blockedSites);
+      const url = new URL(tab.url);
+      let hostname = url.hostname;
+      if (hostname.startsWith('www.')) {
+        hostname = hostname.substring(4);
       }
+      
+      const matchedRule = blockedSites.find(site => hostname.includes(site.url));
+      
+      if (matchedRule) {
+        const segmentInfo = await getCurrentSegment(matchedRule.segments);
+        await updateUsage(matchedRule.url, segmentInfo, 1);
+        
+        const shouldBlock = await shouldBlockSite(matchedRule.url, matchedRule);
+        if (shouldBlock) {
+          await updateDeclarativeRules(blockedSites);
+        }
+      }
+    } catch (error) {
+      console.error('Error tracking usage:', error);
     }
-  } catch (error) {
-  }
-}
-
-chrome.tabs.onActivated.addListener(async (activeInfo) => {
-  try {
-    const tab = await chrome.tabs.get(activeInfo.tabId);
-    
-    if (!tab.url) return;
-    
-    const { blockedSites = [] } = await chrome.storage.local.get('blockedSites');
-    
-    const url = new URL(tab.url);
-    let hostname = url.hostname;
-    if (hostname.startsWith('www.')) {
-      hostname = hostname.substring(4);
-    }
-    
-    const matchedRule = blockedSites.find(site => hostname.includes(site.url));
-    
-    if (matchedRule) {
-      console.log(`Started tracking: ${matchedRule.url}`);
-    }
-  } catch (error) {
   }
 });
 

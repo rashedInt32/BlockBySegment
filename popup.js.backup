@@ -1,6 +1,9 @@
 const urlInput = document.getElementById('website-url');
 const segmentRadios = document.querySelectorAll('input[name="segment"]');
-const hoursContainer = document.getElementById('hours-container');
+const slider = document.getElementById('time-slider');
+const sliderProgress = document.getElementById('slider-progress');
+const sliderThumb = document.getElementById('slider-thumb');
+const sliderThumbValue = document.getElementById('slider-thumb-value');
 const saveBtn = document.getElementById('save-btn');
 const blockedList = document.getElementById('blocked-sites');
 
@@ -12,48 +15,103 @@ const segmentHoursMap = {
   12: 2
 };
 
-let currentMaxHours = 6;
-let currentSelectedHours = 3;
+let isDragging = false;
+let sliderRect = null;
+let currentMinValue = 1;
+let currentMaxValue = 6;
+let currentValue = 2;
 
-function generateHourOptions(maxHours) {
-  hoursContainer.innerHTML = '';
-  for (let i = 1; i <= maxHours; i++) {
-    const label = document.createElement('label');
-    label.className = 'circle-glass-radio';
-    
-    const input = document.createElement('input');
-    input.type = 'radio';
-    input.name = 'hours';
-    input.value = i;
-    if (i === Math.min(currentSelectedHours, maxHours)) {
-      input.checked = true;
-      currentSelectedHours = i;
-    }
-    
-    const span = document.createElement('span');
-    span.className = 'circle-number';
-    span.textContent = i;
-    
-    label.appendChild(input);
-    label.appendChild(span);
-    hoursContainer.appendChild(label);
-  }
-}
+const updateSliderUI = (value) => {
+  currentValue = Math.max(currentMinValue, Math.min(currentMaxValue, value));
+  const percent = ((currentValue - currentMinValue) / (currentMaxValue - currentMinValue)) * 100;
+  const px = (percent / 100) * sliderRect.width;
+  
+  sliderProgress.style.width = `${percent}%`;
+  sliderThumb.style.left = `${px}px`;
+  sliderThumbValue.textContent = `${currentValue}h`;
+};
 
-function updateHourOptions(segments) {
+const getValueFromClientX = (clientX) => {
+  const offsetX = clientX - sliderRect.left;
+  const percent = (offsetX / sliderRect.width) * 100;
+  const range = currentMaxValue - currentMinValue;
+  const value = Math.round((percent / 100) * range + currentMinValue);
+  return value;
+};
+
+const onMove = (clientX) => {
+  const value = getValueFromClientX(clientX);
+  updateSliderUI(value);
+};
+
+const onMouseDown = (e) => {
+  isDragging = true;
+  sliderRect = slider.getBoundingClientRect();
+  onMove(e.clientX);
+  sliderThumb.classList.add('active');
+};
+
+const onTouchStart = (e) => {
+  isDragging = true;
+  sliderRect = slider.getBoundingClientRect();
+  onMove(e.touches[0].clientX);
+  sliderThumb.classList.add('active');
+};
+
+const onMouseMove = (e) => {
+  if (isDragging) onMove(e.clientX);
+};
+
+const onTouchMove = (e) => {
+  if (isDragging) onMove(e.touches[0].clientX);
+};
+
+const stopDrag = () => {
+  isDragging = false;
+  sliderThumb.classList.remove('active');
+};
+
+const initSlider = () => {
+  sliderRect = slider.getBoundingClientRect();
+  updateSliderUI(currentValue);
+};
+
+sliderThumb.addEventListener('mousedown', onMouseDown);
+sliderThumb.addEventListener('touchstart', onTouchStart, { passive: true });
+
+document.addEventListener('mousemove', onMouseMove);
+document.addEventListener('mouseup', stopDrag);
+document.addEventListener('touchmove', onTouchMove, { passive: false });
+document.addEventListener('touchend', stopDrag);
+
+slider.addEventListener('mousedown', (e) => {
+  sliderRect = slider.getBoundingClientRect();
+  onMove(e.clientX);
+});
+
+slider.addEventListener('touchstart', (e) => {
+  sliderRect = slider.getBoundingClientRect();
+  onMove(e.touches[0].clientX);
+}, { passive: true });
+
+function updateSliderRange(segments) {
   const maxHours = segmentHoursMap[segments];
-  currentMaxHours = maxHours;
-  generateHourOptions(maxHours);
+  currentMaxValue = maxHours;
+  
+  if (currentValue > maxHours) {
+    currentValue = maxHours;
+  }
+  
+  sliderRect = slider.getBoundingClientRect();
+  updateSliderUI(currentValue);
 }
 
 segmentRadios.forEach(radio => {
   radio.addEventListener('change', (e) => {
     const segments = parseInt(e.target.value);
-    updateHourOptions(segments);
+    updateSliderRange(segments);
   });
 });
-
-generateHourOptions(currentMaxHours);
 
 saveBtn.addEventListener('click', async () => {
   const url = urlInput.value.trim();
@@ -70,7 +128,7 @@ saveBtn.addEventListener('click', async () => {
   }
   
   const selectedSegment = parseInt(document.querySelector('input[name="segment"]:checked').value);
-  const unblockTime = parseInt(document.querySelector('input[name="hours"]:checked').value);
+  const unblockTime = currentValue;
   
   const blockRule = {
     url: normalizedUrl,
@@ -115,20 +173,12 @@ async function loadBlockedSites() {
       return;
     }
     
-    const sitesWithStatus = await Promise.all(blockedSites.map(async (site, index) => {
-      const status = await getSiteStatus(site);
-      return { site, index, status };
-    }));
-    
-    blockedList.innerHTML = sitesWithStatus.map(({ site, index, status }) => `
+    blockedList.innerHTML = blockedSites.map((site, index) => `
       <div class="blocked-item">
         <div class="blocked-info">
           <div class="blocked-url">${site.url}</div>
           <div class="blocked-meta">
-            ${site.segments} segments • ${site.unblockHours}hr unblock
-          </div>
-          <div class="blocked-status ${status.isBlocked ? 'status-blocked' : 'status-active'}">
-            ${status.isBlocked ? '🔒' : '🟢'} ${status.message}
+            ${site.segments} segments • ${site.unblockHours}h unblock per segment
           </div>
         </div>
         <button class="delete-btn" data-index="${index}">Delete</button>
@@ -141,65 +191,6 @@ async function loadBlockedSites() {
   } catch (error) {
     console.error('Error loading blocked sites:', error);
   }
-}
-
-async function getSiteStatus(site) {
-  try {
-    const segmentDuration = site.segmentDuration || segmentHoursMap[site.segments];
-    const segmentInfo = await getCurrentSegment(site.segments);
-    const usageSeconds = await getUsageForCurrentSegment(site.url, segmentInfo);
-    const usageHours = usageSeconds / 3600;
-    const remainingHours = site.unblockHours - usageHours;
-    const isBlocked = usageHours >= site.unblockHours;
-    
-    const nextSegmentStart = new Date(segmentInfo.segmentStartTime + (segmentDuration * 60 * 60 * 1000));
-    const now = new Date();
-    const timeUntilNext = nextSegmentStart - now;
-    
-    if (isBlocked) {
-      const hours = Math.floor(timeUntilNext / (1000 * 60 * 60));
-      const minutes = Math.floor((timeUntilNext % (1000 * 60 * 60)) / (1000 * 60));
-      return {
-        isBlocked: true,
-        message: `Blocked • Next in ${hours}h ${minutes}m`
-      };
-    } else {
-      const hours = Math.floor(remainingHours);
-      const minutes = Math.floor((remainingHours - hours) * 60);
-      return {
-        isBlocked: false,
-        message: `Active • ${hours}h ${minutes}m left`
-      };
-    }
-  } catch (error) {
-    console.error('Error getting site status:', error, site);
-    return {
-      isBlocked: false,
-      message: 'Status unavailable'
-    };
-  }
-}
-
-async function getCurrentSegment(segments) {
-  const now = new Date();
-  const startOfDay = new Date(now);
-  startOfDay.setHours(0, 0, 0, 0);
-  
-  const segmentDuration = segmentHoursMap[segments];
-  const hoursSinceStart = (now - startOfDay) / (1000 * 60 * 60);
-  const currentSegment = Math.floor(hoursSinceStart / segmentDuration);
-  
-  return {
-    segmentIndex: currentSegment,
-    segmentDuration: segmentDuration,
-    segmentStartTime: startOfDay.getTime() + (currentSegment * segmentDuration * 60 * 60 * 1000)
-  };
-}
-
-async function getUsageForCurrentSegment(url, segmentInfo) {
-  const storageKey = `usage_${url}_${segmentInfo.segmentStartTime}`;
-  const result = await chrome.storage.local.get(storageKey);
-  return result[storageKey] || 0;
 }
 
 async function deleteBlockRule(e) {
@@ -298,5 +289,5 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
+initSlider();
 loadBlockedSites();
-
