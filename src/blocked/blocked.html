@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Time's up — BlockBySegment</title>
+    <link rel="stylesheet" href="../shared/ui.css" />
+    <link rel="stylesheet" href="blocked.css" />
+  </head>
+  <body>
+    <main class="card panel">
+      <div class="emoji">⏳</div>
+      <h1 id="headline">Time's up for now</h1>
+      <p id="domain" class="domain"></p>
+      <p id="sub" class="sub"></p>
+      <p id="countdown" class="countdown"></p>
+
+      <button id="toggle-override" class="ghost">Parent override</button>
+      <form id="override-form" class="override hidden">
+        <input id="ov-pin" type="password" inputmode="numeric" autocomplete="off" placeholder="Parent PIN" />
+        <select id="ov-minutes">
+          <option value="15">+15 minutes</option>
+          <option value="30">+30 minutes</option>
+          <option value="60">+60 minutes</option>
+        </select>
+        <button class="primary" type="submit">Unlock</button>
+      </form>
+
+      <p class="footer muted">BlockBySegment</p>
+    </main>
+    <script type="module" src="blocked.js"></script>
+  </body>
+</html>

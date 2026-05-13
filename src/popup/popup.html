@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BlockBySegment</title>
+    <link rel="stylesheet" href="../shared/ui.css" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="head">
+      <div class="brand">
+        <span class="logo sm" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9" />
+            <polyline points="12 7 12 12 16 14" />
+          </svg>
+        </span>
+        <h1>BlockBySegment</h1>
+      </div>
+      <div class="row" style="gap: 4px">
+        <button id="parent-btn" class="ghost" title="Parent controls"></button>
+        <button id="settings-btn" class="ghost icon-btn" title="Settings" aria-label="Settings">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div id="pin-banner" class="card banner hidden">
+      No parent PIN yet. <button id="pin-banner-link" class="ghost">Create one →</button>
+    </div>
+
+    <form id="pin-form" class="card pin-row hidden">
+      <input id="pin-input" type="password" inputmode="numeric" autocomplete="off" placeholder="Parent PIN" />
+      <button type="submit" class="primary">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2" /><path d="M8 11V8a4 4 0 0 1 7.7-1.5" /></svg>
+        Unlock
+      </button>
+      <button type="button" id="pin-cancel" class="ghost btn-icon" title="Cancel" aria-label="Cancel">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+      </button>
+    </form>
+
+    <div id="parent-controls" class="card parent-controls hidden">
+      <div class="toggle-row">
+        <label class="switch"><input type="checkbox" id="pause-toggle" /><span class="slider"></span></label>
+        <span class="toggle-label">Pause all blocking</span>
+      </div>
+    </div>
+
+    <main id="list"></main>
+
+    <p id="empty" class="empty hidden">
+      No sites are limited yet. Open <button id="empty-link" class="ghost">Settings</button> to add one.
+    </p>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

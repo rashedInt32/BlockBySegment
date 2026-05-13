@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BlockBySegment — Settings</title>
+    <link rel="stylesheet" href="../shared/ui.css" />
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="hero">
+        <span class="logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9" />
+            <polyline points="12 7 12 12 16 14" />
+          </svg>
+        </span>
+        <div>
+          <h1>BlockBySegment</h1>
+          <p class="muted small">Parent settings</p>
+        </div>
+      </header>
+
+      <!-- Create PIN -->
+      <section id="create-pin" class="card pad hidden">
+        <h2>Create a parent PIN</h2>
+        <p class="muted small">
+          The PIN protects these settings. Choose 4–8 digits. Write it down — there's no recovery.
+        </p>
+        <form id="create-pin-form" class="stack">
+          <input id="new-pin-1" type="password" inputmode="numeric" autocomplete="off" placeholder="New PIN" />
+          <input id="new-pin-2" type="password" inputmode="numeric" autocomplete="off" placeholder="Confirm PIN" />
+          <button class="primary" type="submit">Set PIN</button>
+        </form>
+      </section>
+
+      <!-- Unlock -->
+      <section id="unlock" class="card pad hidden">
+        <h2>Enter parent PIN</h2>
+        <form id="unlock-form" class="row">
+          <input id="unlock-pin" type="password" inputmode="numeric" autocomplete="off" placeholder="Parent PIN" />
+          <button class="primary" type="submit">Unlock</button>
+        </form>
+      </section>
+
+      <!-- Main settings (after unlock) -->
+      <div id="main" class="stack hidden">
+        <section class="card pad">
+          <div class="toggle-row">
+            <label class="switch"><input type="checkbox" id="pause-toggle" /><span class="slider"></span></label>
+            <span class="toggle-label">Pause all blocking <span class="muted" style="font-weight: 400">— every site becomes reachable again</span></span>
+          </div>
+        </section>
+
+        <section class="card pad">
+          <h2>Limited sites</h2>
+          <p class="muted small">
+            Each site gets a fresh time budget at the start of every segment, aligned to midnight. The budget is
+            the total active time allowed across all visits during that segment.
+          </p>
+          <div class="rule-list">
+            <div class="rule-row rule-head">
+              <span>Site</span>
+              <span>Segments / day</span>
+              <span>Allowed / segment</span>
+              <span></span>
+            </div>
+            <div id="rules-body"></div>
+          </div>
+          <p id="no-rules" class="muted small hidden">No sites yet — add some below.</p>
+        </section>
+
+        <section class="card pad">
+          <h2>Add site(s)</h2>
+          <div class="stack">
+            <textarea id="add-domains" placeholder="youtube.com, tiktok.com&#10;reddit.com"></textarea>
+            <div class="row align-end">
+              <label class="field">
+                Segments / day
+                <select id="add-segments"></select>
+              </label>
+              <label class="field">
+                Allowed minutes / segment
+                <input id="add-minutes" type="number" min="1" value="60" />
+              </label>
+              <span class="spacer"></span>
+              <button id="add-btn" type="button">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                Add
+              </button>
+            </div>
+            <p id="add-hint" class="muted small"></p>
+          </div>
+        </section>
+
+        <div class="row sticky-save">
+          <button id="save-btn" class="primary">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
+            Save changes
+          </button>
+          <span id="dirty-note" class="muted small hidden">Unsaved changes</span>
+          <span class="spacer"></span>
+          <button id="changepin-btn" class="ghost">Change PIN…</button>
+        </div>
+
+        <section class="card pad">
+          <h2>Recent usage</h2>
+          <p class="muted small">Active time on each limited site, by day (last 14 days).</p>
+          <div id="history"></div>
+        </section>
+
+        <section id="changepin" class="card pad hidden">
+          <h2>Change PIN</h2>
+          <form id="changepin-form" class="stack">
+            <input id="cp-old" type="password" inputmode="numeric" autocomplete="off" placeholder="Current PIN" />
+            <input id="cp-new1" type="password" inputmode="numeric" autocomplete="off" placeholder="New PIN" />
+            <input id="cp-new2" type="password" inputmode="numeric" autocomplete="off" placeholder="Confirm new PIN" />
+            <button class="primary" type="submit">Update PIN</button>
+          </form>
+        </section>
+
+        <section class="card pad note">
+          <h2>Good to know</h2>
+          <ul>
+            <li>A browser extension can't stop a determined child — they could remove the extension, use another browser, or a guest profile. Pair this with a supervised Chrome profile / Family Link, and consider enabling this extension in Incognito too (chrome://extensions → Details).</li>
+            <li>Time only counts while the site is the active tab, the browser is focused, and the computer isn't idle.</li>
+            <li>Segments are equal slices of the day from midnight: e.g. 4 segments = 6-hour blocks at 12am, 6am, 12pm, 6pm.</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

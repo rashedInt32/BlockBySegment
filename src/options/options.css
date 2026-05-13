@@ -1,0 +1,155 @@
+.wrap {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 32px 22px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 4px 2px 6px;
+}
+.hero p {
+  margin-top: 1px;
+}
+
+.pad {
+  padding: 20px 22px;
+}
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.card h2 + p {
+  margin-top: -2px;
+}
+.card p.small {
+  line-height: 1.55;
+}
+.card p + .rule-list,
+.card p + .stack,
+.card p + #history {
+  margin-top: 14px;
+}
+
+/* "Limited sites" — a CSS-grid list (header row + data rows share the tracks). */
+.rule-row {
+  display: grid;
+  grid-template-columns: minmax(110px, 1fr) 210px 160px max-content;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 8px;
+  border-bottom: 1px solid var(--border);
+}
+#rules-body .rule-row:last-child {
+  border-bottom: none;
+}
+.rule-head {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-faint);
+  font-weight: 700;
+  padding-top: 4px;
+  padding-bottom: 8px;
+}
+.rule-domain {
+  font-weight: 700;
+  font-size: 14px;
+  word-break: break-all;
+}
+.rule-row select {
+  width: 100%;
+}
+.rule-allowed {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.rule-allowed input[type='number'] {
+  width: 64px;
+  flex: none;
+}
+.max-hint {
+  font-size: 11px;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+.field select {
+  max-width: 215px;
+}
+.field input[type='number'] {
+  max-width: 120px;
+}
+
+.sticky-save {
+  position: sticky;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent, var(--bg) 30%);
+  padding: 14px 2px 10px;
+  z-index: 5;
+}
+.sticky-save .primary {
+  padding: 10px 22px;
+}
+
+#history {
+  display: flex;
+  flex-direction: column;
+}
+.hist-day {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.hist-day:first-child {
+  padding-top: 2px;
+}
+.hist-day:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.hist-day-label {
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+  margin-bottom: 6px;
+}
+.hist-row {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  padding: 3px 0;
+}
+.hist-domain {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.note ul {
+  margin: 8px 0 0 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-dim);
+}
+.note ul li::marker {
+  color: var(--accent);
+}
