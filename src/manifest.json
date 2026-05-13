@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "BlockBySegment",
+  "version": "2.0.0",
+  "description": "Split the day into segments and give each site a time budget per segment. Parent PIN protects the settings.",
+  "minimum_chrome_version": "116",
+  "permissions": [
+    "storage",
+    "declarativeNetRequest",
+    "alarms",
+    "idle",
+    "tabs",
+    "scripting",
+    "notifications"
+  ],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background/index.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_page": "options/options.html",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["blocked/blocked.html"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
