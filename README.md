@@ -3,7 +3,7 @@
 A Chrome (Manifest V3) extension that limits how long chosen sites can be used
 **per time segment of the day**, with a **parent PIN** protecting the settings.
 
-Built for parents who want, say, "1 hour of YouTube per 4‑hour block" — the child
+Built for parents who want, say, "1 hour of YouTube per 4‑hour block", the child
 can open and close the site as many times as they like; the extension tracks the
 total active time and blocks the site once the segment's budget is spent. The
 budget refills at the start of the next segment.
@@ -78,14 +78,14 @@ icons/                    # toolbar icons (copied into dist/ at build time)
 
 ## Permissions
 
-- `storage` — save settings and per‑segment usage locally
-- `declarativeNetRequest` — redirect over‑budget sites to the block page
-- `alarms` — periodic re‑check / segment rollover
-- `idle` — don't count time while the computer is idle/locked
-- `tabs` — see which site is in the active tab
-- `scripting` — inject the heartbeat script on limited sites only
-- `notifications` — "5 minutes left" / "1 minute left" warnings
-- `host_permissions: <all_urls>` — required for the redirect rules
+- `storage`  save settings and per‑segment usage locally
+- `declarativeNetRequest`  redirect over‑budget sites to the block page
+- `alarms`  periodic re‑check / segment rollover
+- `idle`  don't count time while the computer is idle/locked
+- `tabs`  see which site is in the active tab
+- `scripting`  inject the heartbeat script on limited sites only
+- `notifications`  "5 minutes left" / "1 minute left" warnings
+- `host_permissions: <all_urls>`  required for the redirect rules
 
 ## License
 
